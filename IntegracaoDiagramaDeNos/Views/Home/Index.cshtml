@@ -78,13 +78,13 @@
                 centralGravity: 0.3, //é a força que puxa os nós para o centro do gráfico.
                 springLength: 95,//é o comprimento natural das linhas. As molas tentarão se esticar ou comprimir para este comprimento. Manter acima de 80
                 springConstant: 0.04,//é a rigidez das molas. Valores mais altos farão as molas mais rígidas. Manter abaixo de 1
-                damping: 1.01,//é a quantidade de amortecimento aplicado às forças. Isso ajuda a estabilizar o gráfico.
+                damping: 0.09,//é a quantidade de amortecimento aplicado às forças. Isso ajuda a estabilizar o gráfico.
                 avoidOverlap: 0.1 //é a quantidade de espaço extra que os nós tentarão manter entre si para evitar sobreposições.
             },
             maxVelocity: 146, //é a velocidade máxima que um nó pode ter.Isso ajuda a limitar a energia total do sistema e a estabilizar o gráfico.
             minVelocity: 0.1, //é a velocidade mínima que um nó deve ter antes que sua velocidade seja definida como zero. Isso ajuda a estabilizar o gráfico.
             solver: 'barnesHut', //é o algoritmo usado para calcular as forças. ‘barnesHut’ é um algoritmo eficiente que calcula as forças entre os nós.
-            timestep: 0, // é a quantidade de tempo simulado que passa a cada quadro.Valores mais altos farão a simulação correr mais rápido, mas também podem torná- la instável. curto muito  0
+            timestep: 0.35, // é a quantidade de tempo simulado que passa a cada quadro.Valores mais altos farão a simulação correr mais rápido, mas também podem torná- la instável. curto muito  0
             stabilization: { iterations: 150 } // é a configuração para a fase de estabilização inicial. A simulação será executada por um determinado número de iterations antes de ser exibida, o que pode ajudar a evitar que o gráfico seja exibido em um estado não estabilizado.
                                                // Na biblioteca VisJs, antes de o gráfico ser exibido, a biblioteca executa uma simulação para determinar a posição ideal dos nós.Esta simulação é executada um número específico de vezes, que é o valor definido em iterations.
                                                // Por exemplo, se iterations for definido como 150, a simulação será executada 150 vezes.Isso ajuda a garantir que o gráfico esteja em um estado estável antes de ser exibido.
