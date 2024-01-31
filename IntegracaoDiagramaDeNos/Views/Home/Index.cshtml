@@ -1,8 +1,95 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<style type="text/css">
+    #mynetwork {
+        width: 600px;
+        height: 400px;
+        border: 1px solid lightgray;
+    }
+</style>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+<div id="mynetwork"></div>
+
+<script type="text/javascript">
+    // Cria um array com nós ou seja os balões
+        //Estilização personalizada tem que ser feita um a um , ou seja colocar o tipo dele aqui : interlocutores , investigados , desconhecidos...
+    var nodes = new vis.DataSet([
+        { id: 1, label: 'Pessoa 1', color: 'red' },
+        { id: 2, label: 'Pessoa 2', color: 'red' },
+        { id: 3, label: 'Pessoa 3', color: 'red' },
+        { id: 4, label: 'Pessoa 4', color: 'red' },
+        { id: 5, label: 'Pessoa 5', color: 'red' },
+        { id: 6, label: 'Pessoa 6', color: 'green' },
+        { id: 7, label: 'Pessoa 7', color: 'green' },
+        { id: 8, label: 'Pessoa 8', color: 'green' },
+        { id: 9, label: 'Pessoa 9', color: 'black' },
+        { id: 10, label: 'Pessoa 10', color: 'black' }
+    ]);
+    console.log(nodes);
+    // Cria um array com arestas ou seja as linhas
+    //As cores das linhas vem do nó e no sentido From -> to
+    var edges = new vis.DataSet([
+        { from: 1, to: 2 },
+        { from: 1, to: 3 },
+        { from: 2, to: 4 },
+        { from: 2, to: 5 },
+        { from: 3, to: 6 },
+        { from: 4, to: 7 },
+        { from: 5, to: 8 },
+        { from: 6, to: 9 },
+        { from: 7, to: 10 },
+        { from: 8, to: 10 }
+       
+    ]);
+
+    // Importante para informar onde será criado
+    var container = document.getElementById('mynetwork');
+    //aqui faz as ligações entre balões e linhas
+    var data = {
+        nodes: nodes,
+        edges: edges
+    };
+    //Responsavel pela estilização , funciona tipo um css da vida 
+    var options = {
+        nodes: {
+            shape: 'circle',
+            size: 20,
+            font: {
+                size: 15,
+                color: 'white'
+            },
+            borderWidth: 2,
+            shadow: true
+        },
+        edges: {
+            width: 2,
+            shadow: true
+        },
+
+        //Responsavel pelo espaçamento entre os nos
+        physics: {
+            
+            enabled: true,//Responsavel pelo distanciamento entre os nos
+            barnesHut: {
+                gravitationalConstant: -1000,//força que os nos se repelem , manter abaixo de -1000
+                centralGravity: 0.3, //é a força que puxa os nós para o centro do gráfico.
+                springLength: 95,//é o comprimento natural das linhas. As molas tentarão se esticar ou comprimir para este comprimento. Manter acima de 80
+                springConstant: 0.04,//é a rigidez das molas. Valores mais altos farão as molas mais rígidas. Manter abaixo de 1
+                damping: 1.01,//é a quantidade de amortecimento aplicado às forças. Isso ajuda a estabilizar o gráfico.
+                avoidOverlap: 0.1 //é a quantidade de espaço extra que os nós tentarão manter entre si para evitar sobreposições.
+            },
+            maxVelocity: 146, //é a velocidade máxima que um nó pode ter.Isso ajuda a limitar a energia total do sistema e a estabilizar o gráfico.
+            minVelocity: 0.1, //é a velocidade mínima que um nó deve ter antes que sua velocidade seja definida como zero. Isso ajuda a estabilizar o gráfico.
+            solver: 'barnesHut', //é o algoritmo usado para calcular as forças. ‘barnesHut’ é um algoritmo eficiente que calcula as forças entre os nós.
+            timestep: 0, // é a quantidade de tempo simulado que passa a cada quadro.Valores mais altos farão a simulação correr mais rápido, mas também podem torná- la instável. curto muito  0
+            stabilization: { iterations: 150 } // é a configuração para a fase de estabilização inicial. A simulação será executada por um determinado número de iterations antes de ser exibida, o que pode ajudar a evitar que o gráfico seja exibido em um estado não estabilizado.
+                                               // Na biblioteca VisJs, antes de o gráfico ser exibido, a biblioteca executa uma simulação para determinar a posição ideal dos nós.Esta simulação é executada um número específico de vezes, que é o valor definido em iterations.
+                                               // Por exemplo, se iterations for definido como 150, a simulação será executada 150 vezes.Isso ajuda a garantir que o gráfico esteja em um estado estável antes de ser exibido.
+                                               // Ajustar o número de iterations pode ajudar a controlar o equilíbrio entre o tempo de carregamento e a qualidade da disposição inicial dos nós.Um número maior de iterations pode levar a uma disposição inicial mais precisa, mas também pode aumentar o tempo de carregamento do gráfico.
+        }
+    };
+    var network = new vis.Network(container, data, options);
+</script>
