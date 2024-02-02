@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IntegracaoDiagramaDeNos.ViewModel.HomeViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
@@ -14,21 +15,30 @@
 <div id="mynetwork"></div>
 
 <script type="text/javascript">
+    var Investigados = @Html.Raw(Json.Serialize(Model.investigados));
+    console.log(Investigados);
+    var nodes = [];
+    listInv.forEach(function (element, index) {
+        var item = listInv[index];
+        var teste = new vis.DataSet({ id: item.id, label: item.label, color: item.color });
+        // console.log(teste);
+        // nodes.push(teste);
+    });
     // Cria um array com nós ou seja os balões
-        //Estilização personalizada tem que ser feita um a um , ou seja colocar o tipo dele aqui : interlocutores , investigados , desconhecidos...
-    var nodes = new vis.DataSet([
-        { id: 1, label: 'Pessoa 1', color: 'red' },
-        { id: 2, label: 'Pessoa 2', color: 'red' },
-        { id: 3, label: 'Pessoa 3', color: 'red' },
-        { id: 4, label: 'Pessoa 4', color: 'red' },
-        { id: 5, label: 'Pessoa 5', color: 'red' },
-        { id: 6, label: 'Pessoa 6', color: 'green' },
-        { id: 7, label: 'Pessoa 7', color: 'green' },
-        { id: 8, label: 'Pessoa 8', color: 'green' },
-        { id: 9, label: 'Pessoa 9', color: 'black' },
-        { id: 10, label: 'Pessoa 10', color: 'black' }
-    ]);
-    console.log(nodes);
+    //Estilização personalizada tem que ser feita um a um , ou seja colocar o tipo dele aqui : interlocutores , investigados , desconhecidos...
+    // var nodes = new vis.DataSet([
+    //     { id: 1, label: 'Pessoa 1', color: 'red' },
+    //     { id: 2, label: 'Pessoa 2', color: 'red' },
+    //     { id: 3, label: 'Pessoa 3', color: 'red' },
+    //     { id: 4, label: 'Pessoa 4', color: 'red' },
+    //     { id: 5, label: 'Pessoa 5', color: 'red' },
+    //     { id: 6, label: 'Pessoa 6', color: 'green' },
+    //     { id: 7, label: 'Pessoa 7', color: 'green' },
+    //     { id: 8, label: 'Pessoa 8', color: 'green' },
+    //     { id: 9, label: 'Pessoa 9', color: 'black' },
+    //     { id: 10, label: 'Pessoa 10', color: 'black' }
+    // ]);
+  
     // Cria um array com arestas ou seja as linhas
     //As cores das linhas vem do nó e no sentido From -> to
     var edges = new vis.DataSet([
@@ -42,17 +52,18 @@
         { from: 6, to: 9 },
         { from: 7, to: 10 },
         { from: 8, to: 10 }
-       
+
     ]);
 
     // Importante para informar onde será criado
     var container = document.getElementById('mynetwork');
     //aqui faz as ligações entre balões e linhas
     var data = {
-        nodes: nodes,
+        nodes: Investigados,
         edges: edges
     };
-    //Responsavel pela estilização , funciona tipo um css da vida 
+    console.log(data);
+    //Responsavel pela estilização , funciona tipo um css da vida
     var options = {
         nodes: {
             shape: 'circle',
@@ -65,13 +76,21 @@
             shadow: true
         },
         edges: {
-            width: 2,
-            shadow: true
+            color: {
+                color: '#0000ff',      // Cor da linha
+                highlight: '#ff0000',  // Cor da linha quando selecionada ou em foco
+                hover: '#ff4d4d',      // Cor da linha quando o mouse passa por cima
+                inherit: 'from'        // A cor da linha herda a cor do nó 'from' ou 'to' ou 'both'
+            },
+            width: 2,                 // Largura da linha
+            selectionWidth: function (width) { return width * 2; }, // Largura da linha quando selecionada
+            hoverWidth: function (width) { return width * 2; },     // Largura da linha quando o mouse passa por cima
+            shadow: true               // Sombra ativada para a linha
         },
 
         //Responsavel pelo espaçamento entre os nos
         physics: {
-            
+
             enabled: true,//Responsavel pelo distanciamento entre os nos
             barnesHut: {
                 gravitationalConstant: -1000,//força que os nos se repelem , manter abaixo de -1000
@@ -86,9 +105,9 @@
             solver: 'barnesHut', //é o algoritmo usado para calcular as forças. ‘barnesHut’ é um algoritmo eficiente que calcula as forças entre os nós.
             timestep: 0.35, // é a quantidade de tempo simulado que passa a cada quadro.Valores mais altos farão a simulação correr mais rápido, mas também podem torná- la instável. curto muito  0
             stabilization: { iterations: 150 } // é a configuração para a fase de estabilização inicial. A simulação será executada por um determinado número de iterations antes de ser exibida, o que pode ajudar a evitar que o gráfico seja exibido em um estado não estabilizado.
-                                               // Na biblioteca VisJs, antes de o gráfico ser exibido, a biblioteca executa uma simulação para determinar a posição ideal dos nós.Esta simulação é executada um número específico de vezes, que é o valor definido em iterations.
-                                               // Por exemplo, se iterations for definido como 150, a simulação será executada 150 vezes.Isso ajuda a garantir que o gráfico esteja em um estado estável antes de ser exibido.
-                                               // Ajustar o número de iterations pode ajudar a controlar o equilíbrio entre o tempo de carregamento e a qualidade da disposição inicial dos nós.Um número maior de iterations pode levar a uma disposição inicial mais precisa, mas também pode aumentar o tempo de carregamento do gráfico.
+            // Na biblioteca VisJs, antes de o gráfico ser exibido, a biblioteca executa uma simulação para determinar a posição ideal dos nós.Esta simulação é executada um número específico de vezes, que é o valor definido em iterations.
+            // Por exemplo, se iterations for definido como 150, a simulação será executada 150 vezes.Isso ajuda a garantir que o gráfico esteja em um estado estável antes de ser exibido.
+            // Ajustar o número de iterations pode ajudar a controlar o equilíbrio entre o tempo de carregamento e a qualidade da disposição inicial dos nós.Um número maior de iterations pode levar a uma disposição inicial mais precisa, mas também pode aumentar o tempo de carregamento do gráfico.
         }
     };
     var network = new vis.Network(container, data, options);

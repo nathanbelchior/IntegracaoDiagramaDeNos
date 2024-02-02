@@ -1,4 +1,5 @@
 using IntegracaoDiagramaDeNos.Models;
+using IntegracaoDiagramaDeNos.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,15 +8,17 @@ namespace IntegracaoDiagramaDeNos.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly HomeViewModel  _homeViewModel;
+        public HomeController(ILogger<HomeController> logger, HomeViewModel homeViewModel)
         {
             _logger = logger;
+            _homeViewModel = homeViewModel;
         }
 
         public IActionResult Index()
         {
-            return View();
+            _homeViewModel.teste();
+            return View(_homeViewModel);
         }
 
         public IActionResult Privacy()
