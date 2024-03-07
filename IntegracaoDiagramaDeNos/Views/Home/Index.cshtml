@@ -3,6 +3,7 @@
     ViewData["Title"] = "Home Page";
 }
 <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+
 <style type="text/css">
     #mynetwork {
         width: 600px;
@@ -13,16 +14,60 @@
 
 
 <div id="mynetwork"></div>
+<img id="canvasImg" alt="Clique com o botão direito para salvar!" style="display: none; background-color: white;">
+<input type="button" value="Baixar Imagem" onclick="downloadImage();">
 
-<script type="text/javascript">
+<script>
+    // Crie um array com os nós
+    var nodes = new vis.DataSet([
+        { id: 1, label: 'Nó 1' },
+        { id: 2, label: 'Nó 2' },
+        { id: 3, label: 'Nó 3' },
+        { id: 4, label: 'Nó 4' },
+        { id: 5, label: 'Nó 5' }
+    ]);
+
+    // Crie um array com as arestas
+    var edges = new vis.DataSet([
+        { from: 1, to: 3 },
+        { from: 1, to: 2 },
+        { from: 2, to: 4 },
+        { from: 2, to: 5 }
+    ]);
+
+    // Crie a rede
+    var container = document.getElementById('mynetwork');
+    var data = { nodes: nodes, edges: edges };
+    var options = {};
+    var network = new vis.Network(container, data, options);
+
+    // Após o desenho da rede, converta o canvas para uma imagem e exiba-a
+    network.on("afterDrawing", function (ctx) {
+        var dataURL = ctx.canvas.toDataURL("image/jpeg");
+        document.getElementById('canvasImg').src = dataURL;
+    });
+
+    // Função para baixar a imagem
+    function downloadImage() {
+        var link = document.createElement('a');
+        link.href = document.getElementById('canvasImg').src;
+        link.download = 'diagrama.jpg';
+        link.click();
+    }
+</script>
+
+@* <script type="text/javascript">
     var Investigados = @Html.Raw(Json.Serialize(Model.investigados));
     console.log(Investigados);
     var nodes = [];
-    listInv.forEach(function (element, index) {
-        var item = listInv[index];
-        var teste = new vis.DataSet({ id: item.id, label: item.label, color: item.color });
+    var edges = [];
+    Investigados.forEach(function (element, index) {
+        var item = Investigados[index];
+        var teste = { id: item.id, label: item.label, color: item.color };
+        var teste2 = { from: item.origem, to: item.destino };
         // console.log(teste);
-        // nodes.push(teste);
+         nodes.push(teste);
+        edges.push(teste2);
     });
     // Cria um array com nós ou seja os balões
     //Estilização personalizada tem que ser feita um a um , ou seja colocar o tipo dele aqui : interlocutores , investigados , desconhecidos...
@@ -41,25 +86,25 @@
   
     // Cria um array com arestas ou seja as linhas
     //As cores das linhas vem do nó e no sentido From -> to
-    var edges = new vis.DataSet([
-        { from: 1, to: 2 },
-        { from: 1, to: 3 },
-        { from: 2, to: 4 },
-        { from: 2, to: 5 },
-        { from: 3, to: 6 },
-        { from: 4, to: 7 },
-        { from: 5, to: 8 },
-        { from: 6, to: 9 },
-        { from: 7, to: 10 },
-        { from: 8, to: 10 }
+    // var edges = new vis.DataSet([
+    //     { from: 1, to: 2 },
+    //     { from: 1, to: 3 },
+    //     { from: 2, to: 4 },
+    //     { from: 2, to: 5 },
+    //     { from: 3, to: 6 },
+    //     { from: 4, to: 7 },
+    //     { from: 5, to: 8 },
+    //     { from: 6, to: 9 },
+    //     { from: 7, to: 10 },
+    //     { from: 8, to: 10 }
 
-    ]);
+    // ]);
 
     // Importante para informar onde será criado
     var container = document.getElementById('mynetwork');
     //aqui faz as ligações entre balões e linhas
     var data = {
-        nodes: Investigados,
+        nodes: nodes,
         edges: edges
     };
     console.log(data);
@@ -67,6 +112,10 @@
     var options = {
         nodes: {
             shape: 'circle',
+            scaling: {
+                min: 10,  // Tamanho mínimo do nó
+                max: 10,  // Tamanho máximo do nó
+            }, value: 1 ,   // Valor usado para escalar o nó
             size: 20,
             font: {
                 size: 15,
@@ -111,4 +160,9 @@
         }
     };
     var network = new vis.Network(container, data, options);
-</script>
+    // Após o desenho da rede, converta o canvas para uma imagem e exiba-a
+    network.on("afterDrawing", function (ctx) {
+        var dataURL = ctx.canvas.toDataURL();
+        document.getElementById('canvasImg').src = dataURL;
+    });
+</script> *@
